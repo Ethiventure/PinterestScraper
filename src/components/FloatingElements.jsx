@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Sparkles, 
-  Zap, 
-  Heart, 
-  Star, 
+import {
+  Sparkles,
+  Zap,
+  Heart,
+  Star,
   Circle,
   Triangle,
   Square,
@@ -45,14 +45,14 @@ const FloatingElements = () => {
               duration: 8 + Math.random() * 4,
               repeat: Infinity,
               delay: element.delay,
-              ease: "easeInOut"
+              ease: 'easeInOut'
             }}
           >
             <Icon />
           </motion.div>
         );
       })}
-      
+
       {/* Additional geometric shapes */}
       {Array.from({ length: 15 }).map((_, index) => (
         <motion.div
@@ -76,7 +76,7 @@ const FloatingElements = () => {
             duration: 12 + Math.random() * 8,
             repeat: Infinity,
             delay: Math.random() * 5,
-            ease: "easeInOut"
+            ease: 'easeInOut'
           }}
         />
       ))}
@@ -85,5 +85,3 @@ const FloatingElements = () => {
 };
 
 export default FloatingElements;
-
-export default FloatingElements

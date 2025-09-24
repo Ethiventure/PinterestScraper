@@ -33,7 +33,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
+  background:
     radial-gradient(circle at 20% 80%, var(--main) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, var(--accent-1) 0%, transparent 50%),
     radial-gradient(circle at 40% 40%, var(--accent-2) 0%, transparent 50%),
@@ -55,7 +55,7 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
+  background:
     url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f44ec6' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d6164f' fill-opacity='0.03'%3E%3Cpath d='M20 20L0 0h40v40z'/%3E%3C/g%3E%3C/svg%3E");
   z-index: -1;
@@ -77,7 +77,7 @@ body::after {
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Bungee Shade', cursive;
   color: var(--main);
-  text-shadow: 
+  text-shadow:
     2px 2px 0px var(--accent-1),
     4px 4px 0px var(--accent-2),
     6px 6px 10px rgba(0,0,0,0.5);
@@ -88,20 +88,20 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(20px);
   border: 2px solid rgba(244, 78, 198, 0.3);
   border-radius: 20px;
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(244, 78, 198, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .neon-glow {
-  box-shadow: 
+  box-shadow:
     0 0 20px var(--main),
     0 0 40px var(--main),
     0 0 60px var(--main);
 }
 
 .text-glow {
-  text-shadow: 
+  text-shadow:
     0 0 10px var(--main),
     0 0 20px var(--main),
     0 0 30px var(--main);
@@ -163,4 +163,11 @@ input:focus, textarea:focus {
 
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(45deg, var(--accent-1), var(--accent-2));
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
