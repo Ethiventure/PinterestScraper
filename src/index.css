@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Barrio:wght@400&display=swap');
+
+:root {
+  /* Dark mode maximalist palette */
+  --text: #16474b;
+  --bg: #0a0a0a;
+  --main: #f44ec6;
+  --accent-1: #d6164f;
+  --accent-2: #f1dc1a;
+  --card-bg: #1a1a1a;
+  --overlay: rgba(244, 78, 198, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Barrio', cursive;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Maximalist background patterns */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, var(--main) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, var(--accent-1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, var(--accent-2) 0%, transparent 50%),
+    linear-gradient(45deg, transparent 40%, var(--overlay) 50%, transparent 60%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 98px,
+      rgba(244, 78, 198, 0.03) 100px
+    );
+  z-index: -2;
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f44ec6' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d6164f' fill-opacity='0.03'%3E%3Cpath d='M20 20L0 0h40v40z'/%3E%3C/g%3E%3C/svg%3E");
+  z-index: -1;
+  animation: patternFloat 15s linear infinite;
+}
+
+@keyframes backgroundShift {
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  25% { transform: translateX(10px) translateY(-10px) rotate(1deg); }
+  50% { transform: translateX(-5px) translateY(5px) rotate(-0.5deg); }
+  75% { transform: translateX(5px) translateY(-5px) rotate(0.5deg); }
+}
+
+@keyframes patternFloat {
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(-60px) translateY(-60px); }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Bungee Shade', cursive;
+  color: var(--main);
+  text-shadow: 
+    2px 2px 0px var(--accent-1),
+    4px 4px 0px var(--accent-2),
+    6px 6px 10px rgba(0,0,0,0.5);
+}
+
+.glass-card {
+  background: rgba(26, 26, 26, 0.8);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(244, 78, 198, 0.3);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(244, 78, 198, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.neon-glow {
+  box-shadow: 
+    0 0 20px var(--main),
+    0 0 40px var(--main),
+    0 0 60px var(--main);
+}
+
+.text-glow {
+  text-shadow: 
+    0 0 10px var(--main),
+    0 0 20px var(--main),
+    0 0 30px var(--main);
+}
+
+button {
+  font-family: 'Barrio', cursive;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+input, textarea {
+  font-family: 'Barrio', cursive;
+  background: rgba(26, 26, 26, 0.9);
+  border: 2px solid var(--main);
+  color: var(--main);
+  border-radius: 10px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 20px var(--main);
+  border-color: var(--accent-2);
+}
+
+.floating-element {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, var(--main), var(--accent-1));
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, var(--accent-1), var(--accent-2));
+}
