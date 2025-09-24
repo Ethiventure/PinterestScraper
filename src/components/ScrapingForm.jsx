@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Lock, 
-  Unlock, 
-  Download, 
-  Search, 
+import {
+  Lock,
+  Unlock,
+  Download,
+  Search,
   Zap,
   Eye,
   EyeOff,
   Globe,
-  Shield
+  Shield,
+  AlertTriangle
 } from 'lucide-react';
 
-const ScrapingForm = ({ 
-  isPublicBoard, 
-  setIsPublicBoard, 
-  setScrapingResults, 
-  isLoading, 
-  setIsLoading 
+const ScrapingForm = ({
+  isPublicBoard,
+  setIsPublicBoard,
+  setScrapingResults,
+  isLoading,
+  setIsLoading,
+  setError,
+  error,
+  onScrapeComplete
 }) => {
   const [formData, setFormData] = useState({
     boardUrl: '',
@@ -31,24 +35,50 @@ const ScrapingForm = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isPublicBoard) {
+      setError('Private boards are not supported in the web app. Use the desktop script for password-protected content.');
+      return;
+    }
     setIsLoading(true);
-    
-    // Simulate scraping process
-    setTimeout(() => {
-      const mockResults = [
-        { id: 1, title: 'Artistic Design', url: 'https://pinterest.com/pin/123456789/', image: 'https://images.pexels.com/photos/1266810/pexels-photo-1266810.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
-        { id: 2, title: 'Bold Typography', url: 'https://pinterest.com/pin/987654321/', image: 'https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
-        { id: 3, title: 'Layered Composition', url: 'https://pinterest.com/pin/456789123/', image: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
-        { id: 4, title: 'Maximalist Art', url: 'https://pinterest.com/pin/789123456/', image: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
-        { id: 5, title: 'Vintage Collage', url: 'https://pinterest.com/pin/321654987/', image: 'https://images.pexels.com/photos/1266810/pexels-photo-1266810.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword }
-      ];
-      setScrapingResults(mockResults);
+    setError(null);
+    setScrapingResults([]);
+
+    try {
+      const response = await fetch('/api/scrape', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          board_url: formData.boardUrl,
+          keyword: formData.keyword || null,
+          min_width: formData.minWidth,
+          min_height: formData.minHeight,
+          is_public: isPublicBoard,
+          email: formData.email || null,
+          password: formData.password || null
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.detail || 'An unexpected error occurred while scraping the board.');
+        return;
+      }
+
+      setScrapingResults(data.pins || []);
+      setError(null);
+      onScrapeComplete();
+    } catch (err) {
+      setError('Unable to reach the scraping service. Please ensure the backend is running.');
+    } finally {
       setIsLoading(false);
-    }, 3000);
+    }
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="max-w-4xl mx-auto"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -56,7 +86,7 @@ const ScrapingForm = ({
     >
       <div className="glass-card p-8 mb-8">
         {/* Board Type Toggle */}
-        <motion.div 
+        <motion.div
           className="flex justify-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -66,8 +96,8 @@ const ScrapingForm = ({
             <motion.button
               onClick={() => setIsPublicBoard(true)}
               className={`px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all duration-300 ${
-                isPublicBoard 
-                  ? 'bg-green-500 text-black neon-glow' 
+                isPublicBoard
+                  ? 'bg-green-500 text-black neon-glow'
                   : 'text-green-400 hover:text-green-300'
               }`}
               whileHover={{ scale: 1.05 }}
@@ -79,8 +109,8 @@ const ScrapingForm = ({
             <motion.button
               onClick={() => setIsPublicBoard(false)}
               className={`px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all duration-300 ${
-                !isPublicBoard 
-                  ? 'bg-red-500 text-black neon-glow' 
+                !isPublicBoard
+                  ? 'bg-red-500 text-black neon-glow'
                   : 'text-red-400 hover:text-red-300'
               }`}
               whileHover={{ scale: 1.05 }}
@@ -91,6 +121,28 @@ const ScrapingForm = ({
             </motion.button>
           </div>
         </motion.div>
+
+        {!isPublicBoard && (
+          <motion.div
+            className="mb-6 p-4 rounded-lg border-2 border-red-500/30 bg-red-500/5 text-red-300 flex items-center gap-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <Lock size={20} />
+            Private boards currently require logging in through the legacy desktop script. The web app supports public boards only.
+          </motion.div>
+        )}
+
+        {error && (
+          <motion.div
+            className="mb-6 p-4 rounded-lg border-2 border-yellow-500/40 bg-yellow-500/10 text-yellow-200 flex items-center gap-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <AlertTriangle size={20} />
+            {error}
+          </motion.div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Board URL */}
@@ -130,13 +182,12 @@ const ScrapingForm = ({
               onChange={(e) => setFormData({...formData, keyword: e.target.value})}
               placeholder="artistic design, bold typography, etc."
               className="w-full px-4 py-3 text-lg"
-              required
             />
           </motion.div>
 
           {/* Login Fields (only for private boards) */}
           {!isPublicBoard && (
-            <motion.div 
+            <motion.div
               className="space-y-4 p-6 rounded-lg border-2 border-red-500/30 bg-red-500/5"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
@@ -144,10 +195,10 @@ const ScrapingForm = ({
               transition={{ duration: 0.3 }}
             >
               <h3 className="text-red-400 font-bold text-xl flex items-center gap-2">
-                <Lock size={20} />
+                <Unlock size={20} />
                 PRIVATE BOARD CREDENTIALS
               </h3>
-              
+
               <div>
                 <label className="block text-red-400 font-bold mb-2">EMAIL</label>
                 <input
@@ -157,9 +208,10 @@ const ScrapingForm = ({
                   placeholder="your@email.com"
                   className="w-full px-4 py-3 border-red-500"
                   required={!isPublicBoard}
+                  disabled
                 />
               </div>
-              
+
               <div>
                 <label className="block text-red-400 font-bold mb-2">PASSWORD</label>
                 <div className="relative">
@@ -170,11 +222,13 @@ const ScrapingForm = ({
                     placeholder="••••••••"
                     className="w-full px-4 py-3 pr-12 border-red-500"
                     required={!isPublicBoard}
+                    disabled
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-400 hover:text-red-300"
+                    disabled
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
@@ -184,7 +238,7 @@ const ScrapingForm = ({
           )}
 
           {/* Image Size Filters */}
-          <motion.div 
+          <motion.div
             className="grid md:grid-cols-2 gap-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -195,7 +249,7 @@ const ScrapingForm = ({
               <input
                 type="number"
                 value={formData.minWidth}
-                onChange={(e) => setFormData({...formData, minWidth: parseInt(e.target.value)})}
+                onChange={(e) => setFormData({...formData, minWidth: parseInt(e.target.value, 10) || 0})}
                 className="w-full px-4 py-3 border-yellow-400"
                 min="0"
               />
@@ -205,7 +259,7 @@ const ScrapingForm = ({
               <input
                 type="number"
                 value={formData.minHeight}
-                onChange={(e) => setFormData({...formData, minHeight: parseInt(e.target.value)})}
+                onChange={(e) => setFormData({...formData, minHeight: parseInt(e.target.value, 10) || 0})}
                 className="w-full px-4 py-3 border-yellow-400"
                 min="0"
               />
@@ -213,7 +267,7 @@ const ScrapingForm = ({
           </motion.div>
 
           {/* Submit Button */}
-          <motion.div 
+          <motion.div
             className="text-center pt-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -223,8 +277,8 @@ const ScrapingForm = ({
               type="submit"
               disabled={isLoading}
               className={`px-12 py-4 rounded-full font-bold text-xl flex items-center gap-3 mx-auto transition-all duration-300 ${
-                isLoading 
-                  ? 'bg-gray-600 cursor-not-allowed' 
+                isLoading
+                  ? 'bg-gray-600 cursor-not-allowed'
                   : 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 neon-glow'
               }`}
               whileHover={!isLoading ? { scale: 1.05 } : {}}
@@ -234,7 +288,7 @@ const ScrapingForm = ({
                 <>
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   >
                     <Zap size={24} />
                   </motion.div>

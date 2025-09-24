@@ -1,17 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Download, 
-  Search, 
-  Settings, 
-  Zap, 
-  Eye, 
-  Lock, 
-  Unlock,
-  Sparkles,
-  Layers,
-  Palette,
-  Image as ImageIcon
+import {
+  Download,
+  Eye,
+  Settings,
 } from 'lucide-react';
 import Header from './components/Header';
 import ScrapingForm from './components/ScrapingForm';
@@ -24,6 +16,7 @@ function App() {
   const [isPublicBoard, setIsPublicBoard] = useState(true);
   const [scrapingResults, setScrapingResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const tabs = [
     { id: 'scrape', label: 'SCRAPE', icon: Download, color: 'var(--main)' },
@@ -34,12 +27,12 @@ function App() {
   return (
     <div className="min-h-screen relative overflow-hidden">
       <FloatingElements />
-      
+
       <div className="relative z-10">
         <Header />
-        
+
         {/* Main Navigation */}
-        <motion.div 
+        <motion.div
           className="flex justify-center mb-8 px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -53,8 +46,8 @@ function App() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-6 py-3 rounded-full font-bold transition-all duration-300 flex items-center gap-2 ${
-                    activeTab === tab.id 
-                      ? 'neon-glow text-black' 
+                    activeTab === tab.id
+                      ? 'neon-glow text-black'
                       : 'text-white hover:text-pink-400'
                   }`}
                   style={{
@@ -82,16 +75,19 @@ function App() {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
               >
-                <ScrapingForm 
+                <ScrapingForm
                   isPublicBoard={isPublicBoard}
                   setIsPublicBoard={setIsPublicBoard}
                   setScrapingResults={setScrapingResults}
                   isLoading={isLoading}
                   setIsLoading={setIsLoading}
+                  setError={setError}
+                  error={error}
+                  onScrapeComplete={() => setActiveTab('results')}
                 />
               </motion.div>
             )}
-            
+
             {activeTab === 'results' && (
               <motion.div
                 key="results"
@@ -100,10 +96,10 @@ function App() {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
               >
-                <ResultsDisplay results={scrapingResults} />
+                <ResultsDisplay results={scrapingResults} error={error} />
               </motion.div>
             )}
-            
+
             {activeTab === 'settings' && (
               <motion.div
                 key="settings"
