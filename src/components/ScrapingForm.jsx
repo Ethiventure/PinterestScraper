@@ -36,9 +36,11 @@ const ScrapingForm = ({
     // Simulate scraping process
     setTimeout(() => {
       const mockResults = [
-        { id: 1, title: 'Artistic Design', url: 'https://example.com/1', image: 'https://images.pexels.com/photos/1266810/pexels-photo-1266810.jpeg?auto=compress&cs=tinysrgb&w=400' },
-        { id: 2, title: 'Bold Typography', url: 'https://example.com/2', image: 'https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?auto=compress&cs=tinysrgb&w=400' },
-        { id: 3, title: 'Layered Composition', url: 'https://example.com/3', image: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=400' }
+        { id: 1, title: 'Artistic Design', url: 'https://pinterest.com/pin/123456789/', image: 'https://images.pexels.com/photos/1266810/pexels-photo-1266810.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
+        { id: 2, title: 'Bold Typography', url: 'https://pinterest.com/pin/987654321/', image: 'https://images.pexels.com/photos/1181467/pexels-photo-1181467.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
+        { id: 3, title: 'Layered Composition', url: 'https://pinterest.com/pin/456789123/', image: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
+        { id: 4, title: 'Maximalist Art', url: 'https://pinterest.com/pin/789123456/', image: 'https://images.pexels.com/photos/1183992/pexels-photo-1183992.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword },
+        { id: 5, title: 'Vintage Collage', url: 'https://pinterest.com/pin/321654987/', image: 'https://images.pexels.com/photos/1266810/pexels-photo-1266810.jpeg?auto=compress&cs=tinysrgb&w=400', keyword: formData.keyword }
       ];
       setScrapingResults(mockResults);
       setIsLoading(false);
