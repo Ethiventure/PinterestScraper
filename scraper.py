@@ -25,26 +25,35 @@ import sys, PinterestScraper, requests, bs4, csv, os, getpass, CSVHelper
 
 def Main():
     if len(sys.argv) == 2:
-        password = GetPassword()
-        RunScraper(password)
+        RunScraper()
     else:
         print('invalid arguments... python3 scraper.py [email] required')
 
 # desc: Main loop for scraper shell
-# 
-# Parameters:
-# ------------
-# password : string
-#       Holds the user entered password
-def RunScraper(password):
+def RunScraper():
     isRunning = True
-    pinObj = PinterestScraper.PinterestScraper(sys.argv[1], password)
-    root = ''
-
-    while(pinObj.GetLoginStatus() == False):
-        email = GetEmail()
+    
+    # Ask user if they want to scrape a public or private board
+    boardType = input('Are you scraping a public board? (y/n): ').lower().strip()
+    
+    if boardType == 'y' or boardType == 'yes':
+        # Public board - no login required
+        print('Scraping public board - no login required')
+        pinObj = PinterestScraper.PinterestScraper()
+    else:
+        # Private board - login required
+        email = sys.argv[1]
         password = GetPassword()
-        pinObj.Login(email, password)
+        pinObj = PinterestScraper.PinterestScraper(email, password)
+        
+        # Ensure login is successful for private boards
+        while(pinObj.GetLoginStatus() == False):
+            print('Login failed. Please try again.')
+            email = GetEmail()
+            password = GetPassword()
+            pinObj.Login(email, password)
+    
+    root = ''
 
     print('Root directory: ' + pinObj.GetRoot() + '\n')
 

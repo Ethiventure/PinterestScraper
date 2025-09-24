@@ -97,12 +97,14 @@ class PinterestScraper:
     #
     # Parameters:
     # ---------------
-    # email : string
-    #       Holds the email/username we will use to login to pinterest account
+    # email : string, optional
+    #       Holds the email/username we will use to login to pinterest account.
+    #       If None, no login will be attempted (for public boards).
     #
-    # password : string
-    #       Holds the password we will use to login to pinterest account      
-    def __init__(self, email, password):
+    # password : string, optional
+    #       Holds the password we will use to login to pinterest account.
+    #       If None, no login will be attempted (for public boards).
+    def __init__(self, email=None, password=None):
         options = Options()
         options.headless = True
         ignored_exceptions = (NoSuchElementException, StaleElementReferenceException)
@@ -110,10 +112,10 @@ class PinterestScraper:
         self.__wait = WebDriverWait(self._browser, 2, ignored_exceptions=ignored_exceptions)
         self.__hasLoggedIn = False
         self.__isRootSet = False
-        self.Login(email, password)
-        self.__links = set()
-        self.__root = ''
-        self.__downloadPath = ''
+        self.__isRootSet = False
+        
+        # Only attempt login if credentials are provided
+        if email is not None and password is not None:
         self.__captionsFilename = 'metadata.json'
         self.__csvFilename = 'infographics.csv'
         self.__keyword = ''
